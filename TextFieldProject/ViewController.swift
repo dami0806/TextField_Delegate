@@ -9,7 +9,6 @@ import UIKit
 
 class ViewController: UIViewController,UITextFieldDelegate {
 
-    
     @IBOutlet weak var textField: UITextField!
     
     override func viewDidLoad() {
@@ -26,6 +25,13 @@ class ViewController: UIViewController,UITextFieldDelegate {
         textField.clearButtonMode = .always
         textField.returnKeyType = .next
         
+        textField.becomeFirstResponder()
+        
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        //textField.resignFirstResponder()
     }
     //텍스트필드의 입력을 시작할때 호출 (시작할지 말지 여부 허락하는 것)
     func textFieldShouldEndEditing(_ textField: UITextField) -> Bool {
@@ -38,16 +44,34 @@ class ViewController: UIViewController,UITextFieldDelegate {
         print(#function)
         print("유저가 텍스트필드의 입력을 시작했다.")
     }
+    
     func textFieldShouldClear(_ textField: UITextField) -> Bool {
         print(#function)
         return true
     }
     //한글자씩 입력되거나 지울때 호출(허락)
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        print(string)
-        print(#function)
-        return true
+        
+        
+        if Int(string) != nil{
+            return false
+    
+        }
+        else{
+            guard let text = textField.text else{return false}
+            let newLen = text.count + string.count - range.length
+            return newLen <= 10
+        }
     }
+//            let maxLength = 10
+//            let currentString: NSString = (textField.text ?? "") as NSString
+//            let newString: NSString =  currentString.replacingCharacters(in: range, with: string) as NSString
+//
+//            return newString.length <= maxLength
+//        }
+        
+       
+    
     //텍스트 필드의 엔터키가 눌리면 다음동작 할지안할지
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         print(#function)
@@ -71,8 +95,7 @@ class ViewController: UIViewController,UITextFieldDelegate {
         print("유저가 텍스트필드 입력을 끝냈다")
     }
     @IBAction func doneBtnTapped(_ sender: UIButton) {
-        print(#function)
-        
+        textField.resignFirstResponder()
     }
     
     
